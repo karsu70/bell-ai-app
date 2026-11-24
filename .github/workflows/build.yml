@@ -32,13 +32,18 @@ jobs:
           npx cap init "BELL AI" "com.bellai.onestate" --web-dir=www
           npx cap add android
           
-          # Kotlin surumunu build.gradle uzerinden dogrudan 1.9.24 yapiyoruz
+          # Tum dosyalardaki eski Kotlin surumlerini kesin olarak 1.9.24 yapiyoruz
           cd android
-          find . -name "build.gradle" -exec sed -i 's/1.6.21/1.9.24/g' {} +
-          find . -name "variables.gradle" -exec sed -i 's/1.6.21/1.9.24/g' {} +
+          find . -type f \( -name "*.gradle" -o -name "*.kts" -o -name "build.gradle" \) -exec sed -i 's/1.6.21/1.9.24/g' {} +
+          find . -type f \( -name "*.gradle" -o -name "*.kts" -o -name "build.gradle" \) -exec sed -i 's/kotlinVersion = .*/kotlinVersion = "1.9.24"/g' {} +
           
+          # Ek olarak root build.gradle icine kotlin eklemesi yapalim
+          if ! grep -q "kotlin-gradle-plugin" build.gradle; then
+            echo "buildscript { repositories { mavenCentral() } dependencies { classpath \"org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24\" } }" >> build.gradle
+          fi
+
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew clean assembleDebug
 
       - name: APK dosyasini yukle
         uses: actions/upload-artifact@v4
