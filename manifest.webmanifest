@@ -1,0 +1,15 @@
+{
+  "name": "BELL AI - OneState Kural Asistanı",
+  "short_name": "BELL AI",
+  "description": "Admin ve Helper ekipleri için OneState kural asistanı",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090909",
+  "theme_color": "#090909",
+  "orientation": "portrait",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}
+  ]
+}

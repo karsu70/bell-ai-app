@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="BELL AI"><link rel="manifest" href="manifest.webmanifest"><title>BELL AI · OneState Kural Asistanı</title>
+<style>
+:root{--bg:#090909;--panel:#151515;--panel2:#1d1d1f;--gold:#e3ad32;--gold2:#9d711c;--text:#f4f1e9;--muted:#a8a8ad;--line:#343434;--green:#36c978}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 5%,#30230c 0,transparent 28%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;background:#0b0b0bf2;backdrop-filter:blur(12px);z-index:4}
+.brand{display:flex;gap:12px;align-items:center;font-weight:800;letter-spacing:.5px}.logo{width:38px;height:38px;border:1px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900;font-size:20px}.brand small{display:block;color:var(--muted);font-weight:500;font-size:11px;letter-spacing:1px}
+.pill{border:1px solid #554116;border-radius:99px;padding:6px 11px;color:#e9c46e;font-size:12px}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 68px)}nav{border-right:1px solid var(--line);padding:22px 14px;background:#0d0d0d}nav button{display:block;width:100%;text-align:left;background:none;border:0;color:#bbb;padding:13px 14px;border-radius:10px;margin:4px 0;font:inherit;cursor:pointer}nav button.active,nav button:hover{background:#3a2b10;color:#f3c04a}.navnote{margin-top:35px;padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:12px}
+main{padding:26px;max-width:1100px;width:100%;margin:auto}.hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:22px}.hero h1{font-size:30px;margin:0 0 4px}.hero p{margin:0;color:var(--muted)}.tag{color:var(--green);font-size:12px}
+.panel{background:linear-gradient(145deg,#191919,#111);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 12px 35px #0005}
+h2{font-size:18px;margin:0 0 14px}.searchrow{display:flex;gap:9px}.searchrow input,.chatbox textarea,.filter{width:100%;background:#0b0b0c;border:1px solid #444;color:var(--text);border-radius:11px;padding:13px;font:inherit;outline:none}.searchrow input:focus,.chatbox textarea:focus{border-color:var(--gold)}button.primary{background:linear-gradient(135deg,#f2c34e,#b77d15);color:#17120a;border:0;border-radius:11px;padding:12px 18px;font-weight:800;cursor:pointer}button.secondary{background:#242424;border:1px solid #484848;color:var(--text);border-radius:10px;padding:10px 14px;cursor:pointer}
+.hint{color:var(--muted);font-size:12px;margin-top:9px}.result{border:1px solid var(--gold2);border-radius:14px;padding:16px;margin-top:14px;background:#17130b}.code{display:inline-block;color:#1a1407;background:var(--gold);font-weight:900;border-radius:7px;padding:3px 9px;margin-right:8px}.result h3{margin:8px 0;font-size:18px}.result p{margin:7px 0}.penalty{color:#ffd16b;font-weight:700}.note{border-top:1px solid #51401c;margin-top:12px;padding-top:10px;color:#ddd;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#101010;border:1px solid var(--line);padding:15px;border-radius:12px}.stat strong{display:block;font-size:23px;color:var(--gold)}.stat span{color:var(--muted);font-size:12px}
+.rulelist{display:grid;gap:9px}.rule{background:#111;border:1px solid var(--line);border-radius:12px;padding:13px}.rulehead{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.rulehead b{color:#f1c45c}.rule small{color:var(--muted)}.rule p{margin:8px 0;color:#ddd;font-size:13px}.rule .penalty{font-size:13px}
+.chatbox textarea{min-height:95px;resize:vertical}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:9px}.empty{color:var(--muted);padding:18px;text-align:center}.hidden{display:none!important}
+footer{color:#777;font-size:11px;text-align:center;padding:22px}
+@media(max-width:720px){.layout{display:block}nav{display:flex;overflow:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line);position:sticky;top:68px;z-index:3}nav button{white-space:nowrap;width:auto;margin:0 3px;padding:9px 12px}.navnote{display:none}main{padding:17px 13px}.hero h1{font-size:25px}.cards{grid-template-columns:repeat(2,1fr)}.searchrow{flex-direction:column}.panel{padding:15px}}
+</style><style>
+/* BELL AI in-app quick launcher: works inside the BELL AI page only, not over other apps. */
+#bell-fab{position:fixed;right:18px;bottom:22px;width:58px;height:58px;border-radius:50%;border:2px solid #e3ad32;background:linear-gradient(145deg,#282016,#080808);color:#f2c34e;font-weight:900;font-size:20px;box-shadow:0 8px 30px #000b;z-index:20;cursor:grab}
+#bell-float{position:fixed;right:16px;bottom:92px;width:min(360px,calc(100vw - 32px));max-height:65vh;overflow:auto;background:#111;border:1px solid #a77a20;border-radius:16px;padding:14px;z-index:19;box-shadow:0 18px 50px #000c;display:none}
+#bell-float.open{display:block}#bell-float textarea{width:100%;min-height:75px;background:#090909;color:#fff;border:1px solid #555;border-radius:9px;padding:10px;font:inherit}#bell-float .floathead{display:flex;justify-content:space-between;align-items:center;color:#f2c34e;font-weight:800;margin-bottom:9px}
+</style></head>
+<body>
+<header><div class="brand"><div class="logo">B</div><div>BELL AI<small>ONESTATE KURAL ASİSTANI</small></div></div><div class="pill">● Yalnızca Admin / Helper</div></header>
+<div class="layout">
+<nav>
+<button class="active" data-tab="assistant">✦ BELL AI</button>
+<button data-tab="rules">▤ Kural arşivi</button>
+<button data-tab="guide">ⓘ Kullanım rehberi</button>
+<div class="navnote">Bu sürüm yerel prototiptir. Gerçek kullanıcı doğrulaması ve ortak veri tabanı içermez.</div>
+</nav>
+<main>
+<section id="assistant">
+<div class="hero"><div><h1>OneState Kural Asistanı</h1><p>Olayı yaz, ilgili kuralı ve kaynakta belirtilen cezayı bul.</p></div><div class="tag">● Kural seti yüklü</div></div>
+<div class="cards"><div class="stat"><strong id="count">0</strong><span>Yüklenen kural kaydı</span></div><div class="stat"><strong>TR</strong><span>Arayüz dili</span></div><div class="stat"><strong>v0.1</strong><span>İlk prototip</span></div></div>
+<div class="panel" style="margin-top:18px"><h2>Olaydan kural bul</h2><div class="chatbox"><textarea id="incident" placeholder="Örn. Bir oyuncu diğer oyuncunun ailesine küfür etti..."></textarea><div class="actions"><button class="secondary" id="clear">Temizle</button><button class="primary" id="analyze">Kuralı bul →</button></div></div><div class="hint">Not: Bu prototip anahtar kelime ve örnek eşleştirmesi yapar. Nihai işlem öncesi kanıtı ve olayın bağlamını Admin/Helper değerlendirmelidir.</div><div id="answer"></div></div>
+<div class="panel"><h2>Hızlı örnekler</h2><div class="rulelist">
+<div class="rule"><div class="rulehead"><b>Ailevi küfür</b><small>→ CHAT2</small></div><button class="secondary sample" data-text="Bir oyuncu diğer oyuncunun ailesine küfür etti.">Örneği dene</button></div>
+<div class="rule"><div class="rulehead"><b>Sesli sohbette müzik</b><small>→ CHAT8</small></div><button class="secondary sample" data-text="Oyuncu sesli sohbette müzik açtı.">Örneği dene</button></div>
+<div class="rule"><div class="rulehead"><b>Araçla kasıtlı çarpma</b><small>→ RP9</small></div><button class="secondary sample" data-text="Bir oyuncu aracıyla başka oyuncuya kasıtlı çarptı.">Örneği dene</button></div>
+</div></div>
+</section>
+<section id="rules" class="hidden"><div class="hero"><div><h1>Kural arşivi</h1><p>Gönderdiğin kaynak metinlerden derlenen maddeler.</p></div></div><div class="panel"><input class="filter" id="filter" placeholder="Kod, başlık veya açıklama ara..."><div class="hint" id="filtercount"></div></div><div id="rulelist" class="rulelist"></div></section>
+<section id="guide" class="hidden"><div class="hero"><div><h1>Kullanım rehberi</h1><p>Admin ve Helper personeli için.</p></div></div><div class="panel"><h2>Nasıl kullanılır?</h2><ol><li>Olayı mümkün olduğunca açık ve tarafsız yaz.</li><li>BELL AI'nin bulduğu kural kodunu ve ceza metnini kontrol et.</li><li>Birden fazla olasılık varsa ek açıklama iste veya ilgili maddeleri karşılaştır.</li><li>Kanıtı incelemeden oyuncu hakkında kesin hüküm verme.</li><li>Kaynakta olmayan bir ceza veya kuralı uydurma.</li></ol><h2>Önemli sınırlar</h2><p>Bu sürüm yalnızca tarayıcıda çalışan bir prototiptir. Erişim rozeti gerçek kimlik doğrulaması değildir. İnternete açılmadan önce Admin/Helper hesapları, sunucu taraflı yetkilendirme, güvenli veri tabanı ve yönetici paneli kurulmalıdır.</p><p>Kurallar yalnızca bu sohbette gönderdiğin kaynak metinlerde yer alan maddelerden oluşturulmuştur. Gönderilmeyen maddeler hakkında sistem kesin kural/ceza üretmemelidir.</p></div></section>
+<footer>BELL AI · OneState Kural Asistanı · Kaynak metinlere dayalı prototip</footer>
+<button id="bell-fab" aria-label="BELL AI hızlı pencere" title="BELL AI hızlı pencere">B</button>
+<div id="bell-float" role="dialog" aria-label="BELL AI hızlı sorgu"><div class="floathead"><span>BELL AI · Hızlı Sorgu</span><button id="float-close" class="secondary">Kapat</button></div><textarea id="float-incident" placeholder="Olayı kısaca yaz..."></textarea><div class="actions"><button class="primary" id="float-analyze">Kuralı bul</button></div><div id="float-answer"></div><div class="hint">Bu pencere yalnızca BELL AI açıkken görünür; diğer uygulamaların üzerine çıkmaz.</div></div>
+</main></div>
+<script>
+const R=[
+["1.1","Genel Şartlar","ONESTATE, Amerika eyaletinde geçen bir rol yapma projesidir.","Kaynakta ceza belirtilmemiştir."],
+["1.1.1","RP, NRP ve OOC tanımları","RP karakterin eylem ve etkileşimlerinin oyun dünyasının mantığı ve karakter kişiliğiyle uyumlu olmasıdır. NRP evrenin mantığını ve RP etkileşim kurallarını ihlal eden davranış veya durumlardır. OOC oyun dünyasının mantığı dışında kalan davranış veya etkileşimdir.","Kaynakta ceza belirtilmemiştir."],
+["1.2","Kuralları kabul etme","Hesap oluşturulmasından itibaren her oyuncu kuralların tamamına uymayı kabul eder ve bunlara riayet etmekten sorumludur.","Kaynakta ceza belirtilmemiştir."],
+["1.3","Kuralların tüm oyunculara uygulanması","Kurallar oyun içi statülerine bakılmaksızın tüm oyuncular için geçerlidir.","Kaynakta ceza belirtilmemiştir."],
+["1.4","Karşılıklı saygı","Tüm etkileşimler karşılıklı saygıya ve diğer oyunculara uygun davranışa dayanmalıdır.","Kaynakta ceza belirtilmemiştir."],
+["1.5","Yönetimin kural değiştirme yetkisi","Yönetim gerekli gördüğünde kuralları değiştirebilir ve düzenleyebilir.","Kaynakta ceza belirtilmemiştir."],
+["1.6","Kural değişikliklerinin duyurulması","Değişiklikler resmi sosyal medya kanalları ve topluluklar aracılığıyla duyurulur.","Kaynakta ceza belirtilmemiştir."],
+["1.7","Projenin amacı","Tüm oyuncular için konforlu ve eğlenceli oyun deneyimi sağlamak.","Kaynakta ceza belirtilmemiştir."],
+["1.8","Oyuncu yardımı /help","Oyuncu oyun içi sohbette /help komutuyla yönetim ekibinden destek alabilir.","Kaynakta ceza belirtilmemiştir."],
+["1.9","Sıkışma durumunda /respawn","Karakter oyun objeleri arasında sıkışırsa /respawn kullanılabilir; karakter ölür ve hastanede yeniden doğar.","Kaynakta ceza belirtilmemiştir."],
+["1.10","NRP sohbeti /n","RP ile ilgili olmayan mesajlar için /n komutuyla NRP sohbeti kullanılmalıdır.","Kaynakta ceza belirtilmemiştir."],
+["1.11","NRP sohbetinde saygı","NRP sohbetindeki iletişim de kurallar, karşılıklı saygı ve uygun davranış çerçevesinde olmalıdır.","Kaynakta ceza belirtilmemiştir."],
+["1.12","Mülk kiralama iptal sınırı","Son 30 günde 5'ten fazla mülk kiralama işlemini iptal etmek, sonraki 30 gün iptal özelliğini devre dışı bırakır.","İptal özelliği 30 gün devre dışı."],
+["2.1","Yönetim eylemleri","Yönetim eylemleri yürürlükteki proje kurallarına göre belirlenir.","Kaynakta ceza belirtilmemiştir."],
+["2.2","Kurallara uymama","Kurallara uyulmaması, yönetim tarafından ihlale karşılık gelen cezayla sonuçlanır.","İhlale karşılık gelen kural cezası."],
+["2.3","İhlal kodları","Yönetim uygulanan kuralı RP1 veya CHAT4 gibi özel kısaltmayla belirtir.","Kaynakta ceza belirtilmemiştir."],
+["NAME1","NRP Takma Ad Kullanımı","RP standartlarına uymayan karakter adı kullanmak.","Zorunlu takma ad değişikliği; aksi hâlde yönetim ad atar."],
+["NAME2","Rahatsız Edici NRP Takma Ad Kullanımı","Yasaklı, uygunsuz, hakaret veya müstehcen kelimeleri takma ad olarak kullanmak. Her dil için geçerlidir.","Zorunlu takma ad değişikliği; yeni adı yönetim belirler."],
+["RP1","Deathmatch (DM)","Geçerli RP sebebi olmaksızın başka oyuncunun karakterine zarar vermek veya öldürmek.","20 dakika hapis."],
+["RP2","Deathmatch Auto (DM Auto)","Geçerli RP sebebi olmaksızın başka oyuncunun aracına zarar vermek veya yok etmek.","20 dakika hapis veya 20 dakika Saldırı Banı."],
+["RP3","NRP Power","Karakterin fiziksel sınırlarını ve yapabileceklerini açıkça aşan davranışlarda bulunmak.","10 dakika hapis."],
+["RP4","NRP Durumları Oluşturmak","Karakter eylemlerindeki RP mantığını ihlal etmek ve gerçek hayatta gerçekleşmesi imkânsız durumlar yaratmak.","15 dakika hapis."],
+["RP5","Metagaming (MG)","Karakterin oyun içinde bilmesinin mümkün olmadığı gerçek dünya bilgilerini kullanmak.","Yerel sohbette 30 dakika sesli ve yazılı susturma veya hapishanede 60 dakikaya kadar susturma."],
+["RP6","RP'den Kaçınma (RP Rejection)","Kişisel avantaj için RP sürecinden sapmak; örneğin silahlı takipte hasar almamak için Yeşil Bölgeye girmek.","30–60 dakika hapis."],
+["RP7","RP Dengesizliği (RP Disbalance)","/do, /me veya /try komutlarıyla rolü kendi lehine adaletsiz biçimde yönlendirmek.","20 dakika hapis."],
+["RP8","AFK","Oyuncunun 5 dakikadan uzun süre oyun içinde aktif olmaması.","Sunucudan bağlantının kesilmesi."],
+["RP9","VDM","Araç kullanarak başka oyuncuya kasıtlı zarar vermek veya öldürmek.","60 dakika hapis."],
+["RP9.1","Mass VDM (Mass Drive-By)","Araçla 5 veya daha fazla oyuncuya veya araçlarına kasıtlı zarar vermek ya da öldürmek.","12 saat hesap yasağı."],
+["RP10","Tekrarlı Öldürme (RK)","Oyuncuyu tekrar tekrar öldürmek veya yeniden doğduktan sonra takip etmeye devam etmek; ölüm RP'si bitmeden veya ölümden sonraki 15 dakika içinde ölüm yerine dönmek. NRP durumda öldürülme istisnadır.","90 dakika hapis."],
+["RP11","Yeşil Alan İhlalleri","Yeşil alanlarda/sınırlarında suç faaliyeti, oyuncuların çıkışını öldürmek amacıyla bekleme veya iş bölgelerinde çatışma/suç faaliyeti.","30–60 dakika hapis veya 60 dakika Saldırı Banı."],
+["RP12","Gerçek Dışı Kaçırma (NRP Kidnapping)","Kaçırılan karakter sayısı kaçıranların %50'sini aşarsa veya aynı anda 5'ten fazla karakter dahil olursa; birim üyelerine yönelik kaçırmalarda da uygulanır.","30 dakika hapis."],
+["RP13","Gerçek Dışı Birim Eylemleri","Birim içinde rol kurallarını ihlal etmek; sebepsiz veya yetkisiz oyuncuları hapisten çıkarmak dahil.","Birimden ihraç ve/veya 30 dakika hapis ile 3 güne kadar hesap yasağı."],
+["RP14","Cinsel Taciz","Cinsel içerikli eylem/simülasyon, açık cinsel diyalog/davranış, etnik veya LGBTQIA+ bireylere hakaret, takip ederek rahatsız etme veya aşırı detaylı cinsel ima. Kaynak, tüm tarafların önceden açık rızasını ve kamusal alan kısıtlamasını da belirtir.","Yerel sohbette 60 dakika sesli ve yazılı susturma veya 24 saat–30 gün hesap yasağı."],
+["RP15","Birim Üyelerini Tahrik Etme","Birimin üyelerini eğlence veya işleyişi bozma amacıyla kasıtlı kışkırtmak/provoke etmek.","30 dakika hapis."],
+["RP16","Acil Sağlık Personeline Karşı Suç","Acil sağlık personeline karşı suç teşkil eden eylemde bulunmak.","90 dakika hapis ile 12 saate kadar hesap yasağı."],
+["CHAT1","Oyuncuya Hakaret","Geçerli RP sebebi olmaksızın başka oyuncuya hakaret etmek. Bazı itham ve hakaret ifadeleri bağlamdan bağımsız cezaya tabidir.","24 saat hesap engeli."],
+["CHAT2","Oyuncunun Yakınlarına Hakaret","Diğer oyuncuların yakınlarına hakaret etmek veya olumsuz bağlamda üstü kapalı bahsetmek.","240 dakika sesli sohbet ve tüm sohbet kanalları susturması veya 3 güne kadar hesap engeli."],
+["CHAT3","Din, Siyaset, Irk, Milliyet, Cinsiyet veya Cinsel Kimlik Temelli Aşağılama","Oyuncunun milliyetini, ırkını, dinini, cinsiyetini veya cinsel kimliğini olumsuz bağlamda aşağılamak/hedef göstermek; hassas sosyal veya siyasi konulardaki hakaretler dahil.","Tüm sohbet kanallarında 240 dakika tam ses ve sohbet susturması veya 3 gün hesap engeli."],
+["CHAT4","Yönetime Hakaret","Yönetim temsilcisine üstü kapalı olsa bile hakaret veya müstehcen dil kullanmak.","Tüm sohbet kanallarında 240 dakika tam sesli ve yazılı susturma veya 7 gün hesap engeli."],
+["CHAT5","Spam ve Art Arda Gereksiz Mesajlar","Herhangi bir sohbette spam, art arda gereksiz/benzer mesajlar veya makro ile tekrarlanan mesajlar göndermek.","Tüm sohbet kanallarında 10 dakika susturma."],
+["CHAT6","Raporlama/Yardım Sistemi Suistimali","Aynı sorun için birden fazla rapor/yardım talebi göndermek, kanalları gereksiz mesajla meşgul etmek veya yönetim yönlendirmesinden sonra talepleri tekrarlamak.","Tüm sohbet kanallarında 10–30 dakika susturma."],
+["CHAT7","İzinsiz Tanıtım","OneState ile tematik olarak ilgili üçüncü taraf kaynaklarını izinsiz tanıtmak.","10 gün hesap engeli."],
+["CHAT8","Sesli Sohbette Müzik","Sesli sohbeti müzik veya diğer yabancı seslerle meşgul etmek.","60 dakika sesli sohbet susturması."],
+["CHAT9","Yönetim veya Şirket Personeli Gibi Davranma","Kişisel kazanç, toksik ortam, oyuncuları yanıltma, yanlış bilgi yayma veya yönetim/şirket çalışanlarının itibarını zedeleme amacıyla personel gibi davranmaya teşebbüs etmek.","İlgili tüm hesaplara kalıcı engel."],
+["CHAT10","Oyuncuları Aldatma","OneState projesi kapsamında oyuncuları herhangi bir yöntemle yanıltmak veya aldatmak.","İlgili tüm hesaplara kalıcı engel."],
+["CHAT11","Yönetimi Aldatma","Yönetim temsilcisini herhangi bir yöntemle yanıltmak veya aldatmak.","İlgili tüm hesaplara kalıcı engel."],
+["CHAT12","Karalama","Projeye/şirkete yönelik yapıcı olmayan eleştiri veya projenin itibarını zedelemeye yönelik karalama.","İlgili tüm hesaplara 30 güne kadar engel."],
+["CHAT13","Gerçek Hayata Yönelik Tehdit","Oyuncuların gerçek hayattaki yaşam ve sağlığına tehdit, oyun içi çatışmayı gerçek hayata taşıma veya anlaşmazlığı gerçek hayatta toplantıyla çözme.","10 gün hesap engeli."],
+["CHAT14","Kurallara Aykırı Davranışlar","Oyuncuyu kasten yanıltıp/etkileyip kural ihlali yapmasına ve yönetimden ceza almasına neden olmak.","Kurallara aykırı davranan hesaba 12 saat engel."],
+["CHAT15","Toksik Davranış","Oyuncularda rahatsızlık/moral bozukluğu yaratan, özellikle oyunculara veya yönetime yönelik toksik/olumsuz eylem, yorum veya tutum.","1–3 gün hesap engeli."],
+["CHAT16","Resmî Olmayan Dil Kullanımı","Oyun içi diyaloglar sunucunun bölgesel dilinde olmalıdır. Rolü engellemeyen 5 veya daha az kişilik gruplar için kaynakta istisna belirtilir.","Tekrara göre 10–60 dakika tüm sohbetlerde sesli/yazılı susturma veya 12 saate kadar hesap uzaklaştırma."],
+["CHAT17","Kişisel Bilgilerin İfşası","Oyuncuların kişisel verilerini, yakınları ve özel hayat bilgilerini ifşa etmek veya başkalarını bunları bulup ifşa etmeye teşvik etmek.","İlgili tüm hesaplara kalıcı engel."],
+["TCHAT1","Ticaret Kanalında Spam","Ticaretle ilgili olmayan mesajları Ticaret Kanalında göndermek veya mesajları küçük değişikliklerle tekrarlamak.","Ticaret ve Birim sohbetlerinde 10–60 dakika susturma."],
+["TCHAT2","Yanıltıcı Bilgi","Oyunda bulunmayan eşyalarla ilgili oyuncuları yanıltıcı mesajları Ticaret Kanalında göndermek.","Ticaret ve Birim sohbetlerinde 10–60 dakika susturma."],
+["ABUSE1","Oyun Modu Suistimali","Avantaj elde etmek veya akışı bozmak için oyun hatası/açığını kullanmak; duvardan ateş/giriş, aktif RP'de çıkış, /respawn ile sahneden kaçış ve cezalara karşı hapisten çıkış kartı örnekleri dahildir.","1–30 gün hesap engeli."],
+["ABUSE2","AFK Suistimali","AFK nedeniyle bağlantı kesilmesini önlemek için oyun hatası/açığı veya tıklayıcı/makro gibi üçüncü taraf program kullanmak.","3 gün hesap engeli."],
+["ABUSE3","Sistematik Kural İhlali","Sunucu kurallarını 5 veya daha fazla kez ihlal etmek.","3–30 gün hesap engeli; tekrarların ciddiyeti, türü ve sayısına göre."],
+["ABUSE3.1","Kasıtlı Kural İhlali","Pişmanlık veya davranış düzeltmesi olmadan sürekli/sistematik ihlal; ABUSE3 kapsamında birden fazla ceza alan oyuncu üst yetkili tarafından tamamen men edilebilir.","İlgili tüm hesaplara kalıcı engel."],
+["ABUSE4","Büyük Ölçekli RP'yi Kesintiye Uğratmak","Büyük etkinliklerin RP'sini bozmak, katılımı kasıtlı engellemek, kontrol noktalarında oyuncuları öldürmek veya başlangıç öncesi bekleme süresine müdahale etmek.","24 saat hesap engeli."],
+["ABUSE5","Oyun Akışını veya Rol Yapmayı Engelleme","İş göstergeleri, bina giriş/çıkışları gibi alanları engellemek dahil oyun akışını engellemek.","10–60 dakika hapis."],
+["ALERT1","Yasaklama Cezasını Aşmaya Çalışma","İhlal cezalarını aşmaya yönelik her türlü girişim.","İlgili tüm hesaplara 14 gün veya ihlalin ciddiyetine göre kalıcı engel."],
+["ALERT2","OneState Sunucularına Zarar Girişimi","Oyun içi ekonomi, sunucuların gidişatı veya projeye önemli zarar vermeyi amaçlayan eylem/eylemsizlik.","İlgili tüm hesaplara kalıcı engel."],
+["ALERT3","Üçüncü Taraf Yazılım Kullanımı (Hile)","Proje dosyalarını/değerlerini değiştirmek için program kullanarak avantaj sağlamak veya projeye/oyunculara zarar vermek.","İlgili tüm hesaplara kalıcı engel."],
+["ALERT4","Sunucu İçi Ekonomiyi Zarara Uğratma","Oyuncular arasında oyun içi para/eşya transferini sunucu sınırlarını aşacak şekilde yapmak.","Aktarılan tutara geri ödeme olmaksızın el koyma; tutar temin edilemezse veya zarar ciddi görülürse 30 günden kalıcıya hesap engeli."],
+["ALERT5","Harici Platformlarda Karalama","OneState, oyuncular, yöneticiler veya şirket çalışanlarının itibarını harici platformlarda aktif olarak zedelemeye girişmek.","İlgili tüm hesaplara kalıcı engel."],
+["ALERT6","Üçüncü Taraf Projelerin Tanıtımı","Topluluk yöneticisi yetkilendirmedikçe oyun içinde başka oyun, ürün, proje veya harici hizmet tanıtmak/reklamını yapmak/bahsetmek.","İlgili tüm hesaplara 14 gün veya kalıcı engel."],
+["ALERT7","Üst Yönetim Kararı","Üst Yönetim ve Topluluk Yöneticisi listede belirtilmeyen ihlaller hakkında ceza verme yetkisine sahiptir.","Üst Yönetim/Topluluk Yöneticisi takdiri."],
+["MEDIA1","Israrlı Takip","Canlı yayın sırasında içerik üreticisini hedef alarak izleme/takip etme veya aktif kayıt/yayın çekimini aksatma/engelleme.","1–24 saat hesap engeli."],
+["CLAN1","Çete Adları, Açıklamaları ve Rütbeleri","Çete adı, açıklaması ve rütbe adları proje kurallarını veya yayın platformu yasaklarını ihlal eden hakaret/yasaklı kelimeler içermemelidir.","Çete adı ve açıklamasının zorla değiştirilmesi."],
+["CLAN2","Çete Giriş/Çıkış Alanlarının Engellenmesi","Çete giriş/çıkış alanlarının kullanımına herhangi bir şekilde engel oluşturmak.","30 dakika hapis."],
+["CLAN2.1","Çete Giriş/Çıkış Alanlarının Araçla Engellenmesi","Araçla çete giriş/çıkış alanını veya erişimi bloke etmek.","60 dakika hapis."]
+];
+if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+const fab=document.getElementById('bell-fab'), floater=document.getElementById('bell-float');
+fab.addEventListener('click',()=>floater.classList.toggle('open'));
+document.getElementById('float-close').onclick=()=>floater.classList.remove('open');
+document.getElementById('float-analyze').onclick=()=>{document.getElementById('incident').value=document.getElementById('float-incident').value;analyze();document.getElementById('float-answer').innerHTML=document.getElementById('answer').innerHTML;};
+const $=s=>document.querySelector(s); const norm=s=>s.toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+$("#count").textContent=R.length;
+function renderRules(list){$("#rulelist").innerHTML=list.map(r=>`<article class="rule"><div class="rulehead"><span class="code">${r[0]}</span><b>${r[1]}</b></div><p>${r[2]}</p><div class="penalty">Ceza: ${r[3]}</div></article>`).join("")||'<div class="empty">Eşleşen kural bulunamadı.</div>';$("#filtercount").textContent=list.length+" kural gösteriliyor."}
+renderRules(R);
+$("#filter").addEventListener("input",e=>{let q=norm(e.target.value);renderRules(R.filter(r=>norm(r.join(" ")).includes(q)))});
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");["assistant","rules","guide"].forEach(id=>$("#"+id).classList.toggle("hidden",id!==b.dataset.tab))});
+function findRules(q){
+let s=norm(q), scores=R.map(r=>{let hay=norm(r.join(" ")), score=0;let keys={
+CHAT2:["aile","ann","baba","kardes","yakini","akraba","ailesine","ailesine kufur","ailevi"],
+CHAT4:["admin","yonetim","yetkiliye kufur","yonetime hakaret"],
+CHAT3:["irk","milliyet","din","siyasi","cinsel kimlik","ayrimci","mezhep"],
+CHAT1:["kufur","hakaret","sovdu","sovme","hakaret etti","ana avrat"],
+CHAT8:["muzik","sesli sohbet","sarki","yabanci ses"],
+RP9:["araciyla carpti","arabayla carpti","vdm","aracla carpti"],
+"RP9.1":["mass vdm","5 oyuncu","bes oyuncu"],
+RP1:["dm","oldurdu","zarar verdi","karakterine saldirdi"],
+RP6:["yesil bolgeye girdi","rpden kacti","rp den kacti"],
+RP11:["yesil alan","green zone","greenzone"],
+RP10:["tekrar oldurdu","rk","olum yerine dondu"],
+CHAT5:["spam","arka arkaya mesaj","gereksiz mesaj"],
+CHAT6:["rapor","yardim talebi","ticket"],
+CHAT13:["gercek hayatta tehdit","olum tehdidi","gercek hayata tasidi"],
+CHAT15:["toksik","rahatsiz etti","bagirdi"],
+CHAT17:["kisisel bilgi","adresini paylasti","telefon numarasi"],
+ABUSE2:["afk","makro","tiklayici"],
+ABUSE3:["5 kez","bes kez","sistematik ihlal"],
+ALERT3:["hile","cheat","ucuncu taraf yazilim"],
+MEDIA1:["yayinci","yayin","icerik ureticisi","yayini bozdu"],
+CLAN2:["cete girisi","cete cikisi","cete alanini engelledi"]
+};(keys[r[0]]||[]).forEach(k=>{if(s.includes(norm(k)))score+=5});if(s.includes(norm(r[0]))||s.includes(norm(r[1])))score+=8;for(let word of norm(r[1]).split(/\s+/)){if(word.length>3&&s.includes(word))score+=1}return {r,score}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+return scores.slice(0,4);
+}
+function analyze(){let q=$("#incident").value.trim();if(!q){$("#answer").innerHTML='<div class="empty">Önce olayın açıklamasını yaz.</div>';return}let hits=findRules(q);if(!hits.length){$("#answer").innerHTML='<div class="result"><h3>Kesin eşleşme bulunamadı</h3><p>Gönderdiğin kaynak kurallar içinde bu olaya uygun maddeyi güvenle belirleyemedim. Olayın ne olduğunu, kime karşı yapıldığını ve bağlamını biraz daha açık yaz.</p><div class="note">Kaynakta olmayan kural veya ceza uydurulmaz.</div></div>';return}
+let top=hits[0], extra=hits.slice(1).filter(x=>x.score>=top.score-2);
+let html=`<div class="result"><div><span class="code">${top.r[0]}</span><b>Kural tespiti</b></div><h3>${top.r[1]}</h3><p>${top.r[2]}</p><p class="penalty">Ceza: ${top.r[3]}</p>`;
+if(extra.length)html+=`<div class="note"><b>Karşılaştırılması gereken olası maddeler:</b><br>${extra.map(x=>`<span class="code">${x.r[0]}</span>${x.r[1]} — ${x.r[3]}`).join("<br>")}<br><br>Olayın ayrıntısı ve kanıtı incelenerek doğru madde seçilmelidir.</div>`;
+if(top.r[0]==="CHAT1")html+='<div class="note">Not: Hakaret oyuncunun ailesine/yakınlarına yönelikse CHAT2; yönetim temsilcisine yönelikse CHAT4 değerlendirilmelidir.</div>';
+if(top.r[0]==="CHAT2")html+='<div class="note">Not: Genel oyuncuya yönelik hakaret CHAT1 kapsamında değerlendirilir.</div>';
+html+='<div class="note" style="color:#54d98d">✓ Kaynakta karşılığı bulundu · Nihai değerlendirme Admin/Helper tarafından yapılmalıdır.</div></div>';$ ("#answer").innerHTML=html}
+$("#analyze").onclick=analyze;$("#clear").onclick=()=>{$("#incident").value="";$("#answer").innerHTML=""};document.querySelectorAll(".sample").forEach(b=>b.onclick=()=>{$("#incident").value=b.dataset.text;analyze()});
+</script></body></html>
